@@ -4,6 +4,7 @@ import os
 import re
 from typing import Tuple, Dict
 
+import ffmpeg
 import requests
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
@@ -152,11 +153,7 @@ class DownTs:
                         with open(ts_file, 'rb') as ts:
                             merged.write(ts.read())
             print(f"Merged into: f'{file}.ts'")
-            # Run FFmpeg command
-            command = [
-                "ffmpeg", "-f", "concat", "-safe", "0", "-i", f'{file}.ts', "-c", "copy", f'{file}.mp4'
-            ]
-            subprocess.run(command, check=True)
+            ffmpeg.input(f'{file}.ts').output(f'{file}.mp4', codec='copy').run()
             print(f"Merged and converted to f'{file}.mp4'")
 
 
